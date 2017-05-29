@@ -5,7 +5,7 @@ import base64
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.hkdf import HKDFExpand
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
 
 DEFAULT_KEYFILE_NAME = '.secrets.key'
@@ -78,9 +78,10 @@ def _read_file_if_exists(path):
 
 
 def _kdf_derive(key):
-    kdf = HKDFExpand(
+    kdf = HKDF(
         algorithm=hashes.SHA256(),
         length=32,
+        salt=None,
         info=None,
         backend=default_backend()
     )
