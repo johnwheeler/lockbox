@@ -11,7 +11,7 @@ pysecrets: User-friendly symmetric-key cryptography
 
 .. image:: https://s3.amazonaws.com/johnwheeler/pysecrets.gif
 
-**pysecrets** provides a command-line interface over cryptography.io's `Fernet symmetric cipher <https://cryptography.io/en/latest/fernet/>`_.
+**pysecrets** provides a command line interface over cryptography.io's `Fernet symmetric cipher <https://cryptography.io/en/latest/fernet/>`_.
 Fernet guarantees that a message encrypted using it cannot be manipulated or read without the key. pysecrets was inspired by the Ruby-based
 `sekrets <https://github.com/ahoward/sekrets>`_ project, but they use incompatible ciphers.
 
