@@ -8,11 +8,11 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
 
-DEFAULT_KEYFILE_NAME = '.secrets.key'
-DEFAULT_KEY_ENVVAR = 'SECRETS_KEY'
+DEFAULT_KEYFILE_NAME = '.lockbox.key'
+DEFAULT_KEY_ENVVAR = 'LOCKBOX_KEY'
 
 
-class SecretsException(BaseException):
+class LockboxException(BaseException):
     pass
 
 
@@ -22,24 +22,24 @@ def cipher(key):
     return Fernet(k)
 
 
-def encrypt(s, key):
+def lock(s, key):
     c = cipher(key)
 
     try:
         data = s.encode('utf-8')
         return c.encrypt(data).decode('utf-8')
     except InvalidToken:
-        raise SecretsException("Invalid key")
+        raise LockboxException("Invalid key")
 
 
-def decrypt(s, key):
+def unlock(s, key):
     c = cipher(key)
 
     try:
         data = s.encode('utf-8')
         return c.decrypt(data).decode('utf-8')
     except InvalidToken:
-        raise SecretsException("Invalid key")
+        raise LockboxException("Invalid key")
 
 
 def genkey():

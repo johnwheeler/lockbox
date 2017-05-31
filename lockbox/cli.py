@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 
 import click
 
-import pysecrets
+import lockbox
 
 
 @click.group()
@@ -16,12 +16,12 @@ def cli():
 @click.argument('input', type=click.File())
 @click.argument('output', type=click.File('w'))
 @click.option('--key', help="An encryption key")
-def write(input, output, key):
+def lock(input, output, key):
     key = _resolve_key(key)
 
     try:
-        ciphertext = pysecrets.encrypt(input.read(), key)
-    except pysecrets.SecretsException as ex:
+        ciphertext = lockbox.lock(input.read(), key)
+    except lockbox.LockboxException as ex:
         click.echo(ex, err=True)
         return
 
@@ -32,12 +32,12 @@ def write(input, output, key):
 @click.argument('input', type=click.File())
 @click.argument('output', type=click.File('w'))
 @click.option('--key', help="An encryption key")
-def read(input, output, key):
+def unlock(input, output, key):
     key = _resolve_key(key)
 
     try:
-        plaintext = pysecrets.decrypt(input.read(), key)
-    except pysecrets.SecretsException as ex:
+        plaintext = lockbox.unlock(input.read(), key)
+    except lockbox.LockboxException as ex:
         click.echo(ex, err=True)
         return
 
@@ -55,7 +55,7 @@ def edit(path, key):
             if os.path.isfile(path):
                 with open(path) as f:
                     ciphertext = f.read()
-                    plaintext = pysecrets.decrypt(ciphertext, key)
+                    plaintext = lockbox.unlock(ciphertext, key)
                     tmpfile.write(plaintext.encode('utf-8'))
                     tmpfile.flush()
 
@@ -63,18 +63,18 @@ def edit(path, key):
             subprocess.call([editor, tmpfile.name])
             tmpfile.seek(0)
             plaintext = tmpfile.read().decode('utf-8')
-            ciphertext = pysecrets.encrypt(plaintext, key)
+            ciphertext = lockbox.lock(plaintext, key)
 
             with open(path, 'w') as f:
                 f.write(ciphertext)
-        except pysecrets.SecretsException as ex:
+        except lockbox.LockboxException as ex:
             click.echo(ex, err=True)
 
 
 @cli.command(help="Generates a cryptographically strong key and writes it to the given output path")
 @click.argument('output', type=click.File('w'))
 def genkey(output):
-    key = pysecrets.genkey()
+    key = lockbox.genkey()
 
     if os.path.isfile(output.name):
         click.echo(
@@ -87,7 +87,7 @@ def genkey(output):
 
 
 def _resolve_key(key):
-    key = pysecrets.resolve_key(key)
+    key = lockbox.resolve_key(key)
 
     if key is None:
         key = click.prompt(text='Key', hide_input=True)

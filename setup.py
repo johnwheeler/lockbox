@@ -5,8 +5,8 @@ install_reqs = parse_requirements('requirements.txt', session=False)
 reqs = [str(ir.req) for ir in install_reqs]
 setup(
     version='0.1',
-    name='pysecrets',
-    url='https://github.com/johnwheeler/secrets',
+    name='lockbox',
+    url='https://github.com/johnwheeler/lockbox',
     author='John Wheeler',
     author_email='john@johnwheeler.org',
     description='User-friendly symmetric-key cryptography',
@@ -14,7 +14,7 @@ setup(
     install_requires=reqs,
     entry_points={
         'console_scripts': [
-            'secrets = pysecrets.cli:cli',
+            'lockbox = lockbox.cli:cli',
         ]
     },
     classifiers=[
