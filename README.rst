@@ -22,7 +22,7 @@ Installation
 Command line interface
 ----------------------
 
-The ``write`` command
+The ``lock`` command
 /////////////////////
 
 .. code::
@@ -36,7 +36,7 @@ The ``write`` command
       --help      Show this message and exit.
 
 
-The ``read`` command
+The ``unlock`` command
 ////////////////////
 
 .. code::
